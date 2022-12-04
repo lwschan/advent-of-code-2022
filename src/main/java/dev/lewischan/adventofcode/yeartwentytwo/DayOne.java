@@ -12,6 +12,8 @@ import org.springframework.shell.standard.ShellMethod;
 @ShellComponent
 public class DayOne extends BaseCommand {
 
+  private final ArrayList<Integer> elvesCalories = new ArrayList<>();
+
   public DayOne() {
     super(CommandKeys.DAY_ONE);
   }
@@ -21,49 +23,47 @@ public class DayOne extends BaseCommand {
   public void run() throws IOException {
     super.run();
 
-    var ioStream = getQuizFileAsIOStream();
-    var topThreeElvesCalories = new ArrayList<Integer>();
-    topThreeElvesCalories.add(0);
-    topThreeElvesCalories.add(0);
-    topThreeElvesCalories.add(0);
+    int currentElfCalories = 0;
+    String line;
 
     try (
-        var inputStreamReader = new InputStreamReader(ioStream);
+        var inputStreamReader = new InputStreamReader(inputStream);
         var bufferedReader = new BufferedReader(inputStreamReader)
     ) {
-      String line;
-      int currentElfCalorie = 0;
-
       while ((line = bufferedReader.readLine()) != null) {
         if (!line.isEmpty()) {
-          currentElfCalorie += Integer.parseInt(line);
+          currentElfCalories += Integer.parseInt(line);
 
           continue;
         }
 
-        var leastCalorieCarriedInTopThree = Collections.min(topThreeElvesCalories);
-
-        if (currentElfCalorie > leastCalorieCarriedInTopThree) {
-          topThreeElvesCalories.set(
-              topThreeElvesCalories.indexOf(leastCalorieCarriedInTopThree),
-              currentElfCalorie);
-        }
-
-        currentElfCalorie = 0;
+        elvesCalories.add(currentElfCalories);
+        currentElfCalories = 0;
       }
 
-      ioStream.close();
-
-      System.out.printf("The highest calorie carried by one elf is %s.%n",
-          Collections.max(topThreeElvesCalories));
-
-      var topThreeTotal = 0;
-      for (var calorie : topThreeElvesCalories) {
-        topThreeTotal += calorie;
-      }
-
-      System.out.printf("Total calorie from top 3 elves carrying the most calorie is %s.%n",
-          topThreeTotal);
+      inputStream.close();
     }
+
+    elvesCalories.sort(Collections.reverseOrder());
+
+    processAnswers();
   }
+
+  @Override
+  protected void partOne() {
+    var highestCalorieCarried = Collections.max(elvesCalories);
+
+    System.out.printf("The highest calorie carried by one elf is %s.%n", highestCalorieCarried);
+
+  }
+
+  @Override
+  protected void partTwo() {
+    var sumOfTopThree = elvesCalories.get(0) + elvesCalories.get(1) + elvesCalories.get(2);
+
+    System.out.printf("Total calorie from top 3 elves carrying the most calorie is %s.%n",
+        sumOfTopThree);
+  }
+
+
 }
