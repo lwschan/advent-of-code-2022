@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
-public abstract class BaseCommand {
+public abstract class BaseDayCommand {
 
   protected static final DateTimeFormatter YEAR_FORMATTER = DateTimeFormatter.ofPattern("yy");
 
@@ -14,29 +14,16 @@ public abstract class BaseCommand {
   protected final String commandInput;
   protected final String commandKey;
 
-  protected InputStream inputStream;
-
-  protected BaseCommand(String commandKey) {
+  protected BaseDayCommand(String commandKey) {
     this.year = Year.parse(commandKey.substring(0, 2), YEAR_FORMATTER);
     this.day = Integer.parseInt(commandKey.substring(3, 5));
     this.commandInput = "%s.txt".formatted(commandKey);
     this.commandKey = commandKey;
-  }
 
-  public void run() throws IOException {
     System.out.printf("Running the solution for year %s day %s.%n", year, day);
-
-    inputStream = getQuizFileAsIOStream();
   }
 
-  protected void processAnswers() throws IOException {
-    partOne();
-    partTwo();
-  }
-
-  protected abstract void partOne();
-
-  protected abstract void partTwo();
+  public abstract void execute() throws IOException;
 
   protected InputStream getQuizFileAsIOStream() {
     var ioStream = this.getClass()

@@ -1,6 +1,6 @@
 package dev.lewischan.adventofcode.yeartwentytwo;
 
-import dev.lewischan.adventofcode.BaseCommand;
+import dev.lewischan.adventofcode.BaseDayCommand;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,7 +8,10 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class DayTwo extends BaseCommand {
+public class DayTwo extends BaseDayCommand {
+
+  private static final int OPPONENT_MOVE_OFFSET = 'A' - 1;
+  private static final int MY_MOVE_OFFSET = 'X' - 1;
 
   public DayTwo() {
     super(CommandKeys.DAY_TWO);
@@ -16,39 +19,59 @@ public class DayTwo extends BaseCommand {
 
   @Override
   @ShellMethod(key = CommandKeys.DAY_TWO)
-  public void run() throws IOException {
-    super.run();
+  public void execute() throws IOException {
+    partOne();
+    partTwo();
+  }
 
-    int currentScore = 0;
+  private int calculateMoveScore(int opponentMove, int myMove) {
+    var delta = myMove - opponentMove;
+
+    return switch (delta) {
+      case 1, -2 -> 6;
+      case 0 -> 3;
+      default -> 0;
+    };
+  }
+
+  private void partOne() throws IOException {
+    int grandTotalScore = 0;
     String line;
 
     try (
+        var inputStream = getQuizFileAsIOStream();
         var inputStreamReader = new InputStreamReader(inputStream);
         var bufferedReader = new BufferedReader(inputStreamReader)
     ) {
       while ((line = bufferedReader.readLine()) != null) {
         var roundPlays = line.split(" ");
-        var opponentPlay = roundPlays[0];
-        var myPlay = roundPlays[1];
+        var opponentMove = roundPlays[0].charAt(0) - OPPONENT_MOVE_OFFSET;
+        var myMove = roundPlays[1].charAt(0) - MY_MOVE_OFFSET;
 
-        System.out.println(line);
-        System.out.println(opponentPlay);
-        System.out.println(myPlay);
+        var roundTotalScore = calculateMoveScore(opponentMove, myMove) + myMove;
+        grandTotalScore += roundTotalScore;
       }
 
       inputStream.close();
     }
 
-    processAnswers();
+    System.out.printf("My total score is %s.%n", grandTotalScore);
   }
 
-  @Override
-  protected void partOne() {
+  private void partTwo() throws IOException {
+    int grandTotalScore = 0;
+    String line;
 
-  }
-
-  @Override
-  protected void partTwo() {
-
+    try (
+        var inputStream = getQuizFileAsIOStream();
+        var inputStreamReader = new InputStreamReader(inputStream);
+        var bufferedReader = new BufferedReader(inputStreamReader)
+    ) {
+      while ((line = bufferedReader.readLine()) != null) {
+        var roundPlays = line.split(" ");
+        var opponentMove = roundPlays[0].charAt(0) - OPPONENT_MOVE_OFFSET;
+        var outcome = roundPlays[1].charAt(0) - MY_MOVE_OFFSET;
+      }
+    }
   }
 }
