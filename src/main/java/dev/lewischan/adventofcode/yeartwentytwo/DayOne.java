@@ -16,6 +16,7 @@ public class DayOne extends BaseDayCommand {
     super(CommandKeys.DAY_ONE);
   }
 
+  @Override
   @ShellMethod(key = CommandKeys.DAY_ONE)
   public void execute() throws IOException {
     var elvesCalories = new ArrayList<Integer>();

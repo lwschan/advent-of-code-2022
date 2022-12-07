@@ -24,16 +24,6 @@ public class DayTwo extends BaseDayCommand {
     partTwo();
   }
 
-  private int calculateMoveScore(int opponentMove, int myMove) {
-    var delta = myMove - opponentMove;
-
-    return switch (delta) {
-      case 1, -2 -> 6;
-      case 0 -> 3;
-      default -> 0;
-    };
-  }
-
   private void partOne() throws IOException {
     int grandTotalScore = 0;
     String line;
@@ -73,5 +63,15 @@ public class DayTwo extends BaseDayCommand {
         var outcome = roundPlays[1].charAt(0) - MY_MOVE_OFFSET;
       }
     }
+  }
+
+  private int calculateMoveScore(int opponentMove, int myMove) {
+    var delta = myMove - opponentMove;
+
+    return switch (delta) {
+      case 1, -2 -> 6;
+      case 0 -> 3;
+      default -> 0;
+    };
   }
 }

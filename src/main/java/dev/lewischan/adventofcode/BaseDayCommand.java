@@ -26,12 +26,12 @@ public abstract class BaseDayCommand {
   public abstract void execute() throws IOException;
 
   protected InputStream getQuizFileAsIOStream() {
-    var ioStream = this.getClass()
+    var inputStream = this.getClass()
         .getClassLoader()
         .getResourceAsStream(commandInput);
 
-    if (ioStream != null) {
-      return ioStream;
+    if (inputStream != null) {
+      return inputStream;
     }
     throw new IllegalArgumentException("%s could not be found.".formatted(commandInput));
   }
